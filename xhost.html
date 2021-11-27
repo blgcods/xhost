@@ -1,1 +1,21 @@
+<!DOCTYPE html>
+<html>
 
+<head>
+    <meta name="referrer" content="no-referrer">
+</head>
+
+<body>
+    <iframe id="targetFrame" style="display: none;"></iframe>
+
+    <script>
+        window.addEventListener("message", function (message) {
+            console.log("postback2", message.data);
+            window.parent.postMessage(message.data, "*");
+        })
+
+        document.getElementById("targetFrame").src = atob(decodeURIComponent(location.hash.substr(1)));
+    </script>
+</body>
+
+</html>
