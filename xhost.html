@@ -10,6 +10,7 @@
 
     <script>
         window.addEventListener("message", function (message) {
+            if(window === message.source) return;
             console.log("postback2", message.data);
             window.parent.postMessage(message.data, "*");
         })
