@@ -6,12 +6,11 @@
 </head>
 
 <body>
-    <iframe id="targetFrame" style="display: none;"></iframe>
+    <iframe id="targetFrame" style="width: 100%; height: 100%;"></iframe>
 
     <script>
         window.addEventListener("message", function (message) {
             if(window === message.source) return;
-            console.log("postback2", message.data);
             window.parent.postMessage(message.data, "*");
         })
 
