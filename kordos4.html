@@ -54,7 +54,7 @@
                         },
                         //body: 'email=kendale' + randomNumber(0, 999999999) + '@cysecomp.org&password=kopiloti55' + randomNumber(0, 999999999)
                         //body: "name=" + btoa(Math.random()*1000000000000).substr(0, 10).replace(/=/g, '')
-                        body: atob("Zm91bmRVc" + "mw9aHR0cHM6Ly9jZG4ueW91bm93LmNvbS9waHAvYXBpL2NoYW5uZWwvZ2V0SW5mby9jaGFubmVsSWQlM0Q=") + randomNumber(100, 50000000)
+                        body: atob("Zm91bmRVc" + "mw9aHR0cHM6Ly9jZG4ueW91bm93LmNvbS9waHAvYXBpL2NoYW5uZWwvZ2V0SW5mby9jaGFubmVsSWQlM0Q=") + Math.round(randomNumber(100, 50000000))
                     })
                 } catch (err) {
 
