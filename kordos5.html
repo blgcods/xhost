@@ -46,13 +46,9 @@
                 totalRequestCount += 1;
 
                 try {
-                    const response = await fetch(targetUri, {
+                    const response = await fetch(targetUri + "?" + randomNumber(0, 99999999), {
                         method: 'GET',
                         referrer: "",
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: "dummy=1" + randomNumber(100, 50000000)
                     })
                 } catch (err) {
 
