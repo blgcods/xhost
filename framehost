@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+        let b64 = new URLSearchParams(location.search).get('b64');
+        document.write('<iframe src="data:text/html;base64,' + b64 + '"></iframe>');
+    </script>
+    
+</body>
+</html>
